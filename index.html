@@ -1,1 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Team Links Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="shell">
+      <section class="topbar" aria-labelledby="page-title">
+        <div>
+          <p class="eyebrow">Business dashboard</p>
+          <h1 id="page-title">Team links</h1>
+          <p class="intro">A quick-launch board for the services, documents, and tools your team uses every day.</p>
+        </div>
+        <div class="status-panel" aria-label="Dashboard status">
+          <span class="status-dot"></span>
+          <span>Ready for GitHub Pages</span>
+        </div>
+      </section>
 
+      <section class="controls" aria-label="Dashboard controls">
+        <label class="search-wrap" for="searchInput">
+          <span class="search-icon" aria-hidden="true">⌕</span>
+          <input id="searchInput" type="search" placeholder="Search links, categories, or notes">
+        </label>
+        <div class="category-tabs" id="categoryTabs" aria-label="Filter categories"></div>
+      </section>
+
+      <section class="link-grid" id="linkGrid" aria-live="polite"></section>
+
+      <section class="empty-state" id="emptyState" hidden>
+        <h2>No matching links</h2>
+        <p>Try a different search or category.</p>
+      </section>
+    </main>
+
+    <script src="dashboard.js"></script>
+  </body>
+</html>
