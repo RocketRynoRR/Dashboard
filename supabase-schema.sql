@@ -18,8 +18,16 @@ create table if not exists public.business_dashboard_admin_users (
   created_at timestamptz not null default now()
 );
 
+create table if not exists public.business_dashboard_user_settings (
+  email text primary key,
+  theme text not null default 'light' check (theme in ('light', 'dark')),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
 alter table public.business_dashboard_links enable row level security;
 alter table public.business_dashboard_admin_users enable row level security;
+alter table public.business_dashboard_user_settings enable row level security;
 
 alter table public.business_dashboard_links
 add column if not exists folder text not null default 'General';
@@ -82,6 +90,28 @@ for select
 to authenticated
 using (public.is_business_dashboard_admin());
 
+drop policy if exists "Users can read own dashboard settings" on public.business_dashboard_user_settings;
+create policy "Users can read own dashboard settings"
+on public.business_dashboard_user_settings
+for select
+to authenticated
+using (lower(email) = lower(auth.jwt() ->> 'email'));
+
+drop policy if exists "Users can insert own dashboard settings" on public.business_dashboard_user_settings;
+create policy "Users can insert own dashboard settings"
+on public.business_dashboard_user_settings
+for insert
+to authenticated
+with check (lower(email) = lower(auth.jwt() ->> 'email'));
+
+drop policy if exists "Users can update own dashboard settings" on public.business_dashboard_user_settings;
+create policy "Users can update own dashboard settings"
+on public.business_dashboard_user_settings
+for update
+to authenticated
+using (lower(email) = lower(auth.jwt() ->> 'email'))
+with check (lower(email) = lower(auth.jwt() ->> 'email'));
+
 create or replace function public.set_business_dashboard_links_updated_at()
 returns trigger
 language plpgsql
@@ -97,6 +127,22 @@ create trigger set_business_dashboard_links_updated_at
 before update on public.business_dashboard_links
 for each row
 execute function public.set_business_dashboard_links_updated_at();
+
+create or replace function public.set_business_dashboard_user_settings_updated_at()
+returns trigger
+language plpgsql
+as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$;
+
+drop trigger if exists set_business_dashboard_user_settings_updated_at on public.business_dashboard_user_settings;
+create trigger set_business_dashboard_user_settings_updated_at
+before update on public.business_dashboard_user_settings
+for each row
+execute function public.set_business_dashboard_user_settings_updated_at();
 
 insert into public.business_dashboard_links (title, url, folder, category, note, icon, color, sort_order)
 values

@@ -453,7 +453,8 @@ input[type="search"] {
 .empty-state,
 .auth-panel,
 .editor-panel,
-.table-panel {
+.table-panel,
+.settings-panel {
   border: 1px solid rgba(23, 32, 28, 0.09);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.86);
@@ -486,7 +487,8 @@ input[type="search"] {
 
 .auth-panel h2,
 .editor-panel h2,
-.table-panel h2 {
+.table-panel h2,
+.settings-panel h2 {
   margin: 0;
   font-size: 1.35rem;
 }
@@ -827,6 +829,82 @@ input[type="search"] {
 
 .role-dot.staff {
   background: var(--blue);
+}
+
+.settings-shell {
+  max-width: 900px;
+}
+
+.settings-panel {
+  padding: 22px;
+}
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  border-top: 1px solid var(--line);
+  padding-top: 18px;
+}
+
+.setting-row h3,
+.setting-row p {
+  margin: 0;
+}
+
+.setting-row h3 {
+  font-size: 1.02rem;
+}
+
+.setting-row p {
+  margin-top: 5px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.switch {
+  position: relative;
+  display: inline-flex;
+  flex: 0 0 auto;
+}
+
+.switch input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.switch-track {
+  position: relative;
+  width: 56px;
+  height: 32px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface-strong);
+  cursor: pointer;
+}
+
+.switch-track::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--muted);
+  transition: transform 160ms ease, background 160ms ease;
+}
+
+.switch input:checked + .switch-track {
+  border-color: var(--accent);
+  background: rgba(45, 181, 165, 0.22);
+}
+
+.switch input:checked + .switch-track::after {
+  transform: translateX(24px);
+  background: var(--accent);
 }
 
 .admin-link-copy {

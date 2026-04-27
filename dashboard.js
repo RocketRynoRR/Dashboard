@@ -56,7 +56,6 @@ const accountButton = document.querySelector("#accountButton");
 const accountDropdown = document.querySelector("#accountDropdown");
 const accountInitials = document.querySelector("#accountInitials");
 const accountEmail = document.querySelector("#accountEmail");
-const themeToggleButton = document.querySelector("#themeToggleButton");
 
 const supabaseClient = window.createDashboardClient();
 
@@ -144,18 +143,25 @@ function toggleAccountMenu() {
   }
 }
 
-function getTheme() {
-  return document.documentElement.dataset.theme === "dark" ? "dark" : "light";
-}
-
 function setTheme(theme) {
   document.documentElement.dataset.theme = theme;
   window.localStorage.setItem("dashboard-theme", theme);
-  themeToggleButton.textContent = theme === "dark" ? "Light mode" : "Dark mode";
 }
 
-function toggleTheme() {
-  setTheme(getTheme() === "dark" ? "light" : "dark");
+async function loadSavedTheme(email) {
+  if (!email || !isSupabaseConfigured()) {
+    return;
+  }
+
+  const { data, error } = await supabaseClient
+    .from("business_dashboard_user_settings")
+    .select("theme")
+    .eq("email", email)
+    .maybeSingle();
+
+  if (!error && data?.theme) {
+    setTheme(data.theme);
+  }
 }
 
 function getCategories() {
@@ -359,8 +365,6 @@ async function loadLinks() {
 async function init() {
   try {
     searchInput.addEventListener("input", renderLinks);
-    setTheme(getTheme());
-    themeToggleButton.addEventListener("click", toggleTheme);
     accountButton.addEventListener("click", (event) => {
       event.stopPropagation();
       toggleAccountMenu();
@@ -403,6 +407,7 @@ async function init() {
 
     if (data.session) {
       showDashboard(data.session);
+      await loadSavedTheme(data.session.user.email);
       await loadLinks();
     } else {
       showLogin();
@@ -434,6 +439,7 @@ authForm.addEventListener("submit", async (event) => {
 
   showAuthMessage("");
   showDashboard(data.session);
+  await loadSavedTheme(data.session.user.email);
   await loadLinks();
 });
 

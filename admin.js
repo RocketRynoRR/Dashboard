@@ -23,7 +23,6 @@ const staffList = document.querySelector("#staffList");
 const refreshStaffButton = document.querySelector("#refreshStaffButton");
 const testStaffFunctionButton = document.querySelector("#testStaffFunctionButton");
 const staffListMessage = document.querySelector("#staffListMessage");
-const adminThemeToggleButton = document.querySelector("#adminThemeToggleButton");
 
 const fields = {
   id: document.querySelector("#linkId"),
@@ -44,18 +43,25 @@ function showMessage(element, message, type = "info") {
   element.hidden = !message;
 }
 
-function getTheme() {
-  return document.documentElement.dataset.theme === "dark" ? "dark" : "light";
-}
-
 function setTheme(theme) {
   document.documentElement.dataset.theme = theme;
   window.localStorage.setItem("dashboard-theme", theme);
-  adminThemeToggleButton.textContent = theme === "dark" ? "Light mode" : "Dark mode";
 }
 
-function toggleTheme() {
-  setTheme(getTheme() === "dark" ? "light" : "dark");
+async function loadSavedTheme(email) {
+  if (!email || !window.SUPABASE_CONFIG.isConfigured || !adminClient) {
+    return;
+  }
+
+  const { data, error } = await adminClient
+    .from("business_dashboard_user_settings")
+    .select("theme")
+    .eq("email", email)
+    .maybeSingle();
+
+  if (!error && data?.theme) {
+    setTheme(data.theme);
+  }
 }
 
 function requireSupabaseConfig() {
@@ -291,6 +297,7 @@ async function initAdmin() {
     }
 
     showAdmin();
+    await loadSavedTheme(data.session.user.email);
     await loadAdminLinks();
     await loadStaffUsers();
   } else {
@@ -325,6 +332,7 @@ adminAuthForm.addEventListener("submit", async (event) => {
 
   showMessage(adminAuthMessage, "");
   showAdmin(data.session);
+  await loadSavedTheme(data.session.user.email);
   await loadAdminLinks();
   await loadStaffUsers();
 });
@@ -360,8 +368,6 @@ refreshButton.addEventListener("click", loadAdminLinks);
 resetFormButton.addEventListener("click", resetForm);
 refreshStaffButton.addEventListener("click", loadStaffUsers);
 testStaffFunctionButton.addEventListener("click", testStaffFunction);
-adminThemeToggleButton.addEventListener("click", toggleTheme);
-setTheme(getTheme());
 
 staffForm.addEventListener("submit", async (event) => {
   event.preventDefault();

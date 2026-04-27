@@ -26,6 +26,8 @@ alter table public.business_dashboard_links
 add column if not exists folder text not null default 'General';
 ```
 
+If you already ran the schema before user settings were added, run the latest `supabase-schema.sql` again. It creates `business_dashboard_user_settings`, which stores each user's light/dark mode preference.
+
 ## Staff User Creation
 
 The admin page can create staff logins, but this requires a Supabase Edge Function because browser code must never contain the service role key.
@@ -45,6 +47,7 @@ After it is deployed, admins can create staff emails and temporary passwords fro
 
 - `index.html` is the staff dashboard.
 - `admin.html` is the admin editor.
+- `settings.html` is the user settings page.
 
 The admin page is protected by Supabase Auth and row level security. Any logged-in staff member can read visible links, but only emails listed in `business_dashboard_admin_users` can add or edit links.
 

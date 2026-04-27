@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Settings | Team Links Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="theme.js"></script>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="shell settings-shell">
+      <section class="topbar" aria-labelledby="page-title">
+        <div>
+          <p class="eyebrow">Settings</p>
+          <h1 id="page-title">Account settings</h1>
+          <p class="intro">Manage your dashboard preferences for this login.</p>
+        </div>
+        <nav class="top-actions" aria-label="Settings navigation">
+          <a class="ghost-link" href="index.html">Dashboard</a>
+          <a class="ghost-link" href="admin.html">Admin</a>
+        </nav>
+      </section>
+
+      <section class="auth-panel" id="settingsLoginPanel">
+        <h2>Sign in required</h2>
+        <p>Sign in on the dashboard first, then return to settings.</p>
+        <a class="primary-button" href="index.html">Go to dashboard</a>
+      </section>
+
+      <section class="settings-panel" id="settingsPanel" hidden>
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Appearance</p>
+            <h2>Theme</h2>
+          </div>
+          <span class="state-pill active" id="settingsUserEmail">Signed in</span>
+        </div>
+
+        <div class="setting-row">
+          <div>
+            <h3>Dark mode</h3>
+            <p>Your preference is saved to Supabase for this login.</p>
+          </div>
+          <label class="switch">
+            <input id="darkModeInput" type="checkbox">
+            <span class="switch-track"></span>
+          </label>
+        </div>
+        <p class="form-message" id="settingsMessage" hidden></p>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="settings.js"></script>
+  </body>
+</html>
