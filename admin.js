@@ -140,6 +140,7 @@ async function callStaffFunction(payload) {
     const response = await fetch(`${window.SUPABASE_CONFIG.url}/functions/v1/create-staff-user`, {
       method: "POST",
       headers: {
+        "apikey": window.SUPABASE_CONFIG.anonKey,
         "Authorization": `Bearer ${accessToken}`,
         "Content-Type": "application/json"
       },
@@ -163,6 +164,11 @@ async function callStaffFunction(payload) {
     if (error.name === "AbortError") {
       throw new Error("The staff management function did not respond. Check that it is deployed and JWT verification is disabled.");
     }
+
+    if (error instanceof TypeError) {
+      throw new Error("Could not reach the staff management function. Check that create-staff-user is deployed, JWT verification is disabled, and the function has CORS enabled.");
+    }
+
     throw error;
   } finally {
     window.clearTimeout(timeoutId);

@@ -112,6 +112,19 @@ function getInitials(email) {
   return initials.toUpperCase();
 }
 
+function getLabelInitials(label) {
+  const words = String(label || "Folder")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+
+  if (words.length > 1) {
+    return `${words[0][0]}${words[1][0]}`.toUpperCase();
+  }
+
+  return String(words[0] || "F").slice(0, 2).toUpperCase();
+}
+
 function openAccountMenu() {
   accountDropdown.hidden = false;
   accountButton.setAttribute("aria-expanded", "true");
@@ -208,7 +221,7 @@ function buildFolderCard(folder) {
   const badge = document.createElement("span");
   badge.className = "icon-badge";
   badge.style.background = folder.color;
-  badge.textContent = "#";
+  badge.textContent = getLabelInitials(folder.name);
   const pill = document.createElement("span");
   pill.className = "category-pill";
   pill.textContent = `${folder.count} links`;
