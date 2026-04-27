@@ -739,7 +739,7 @@ input[type="search"] {
 }
 
 .staff-row {
-  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   gap: 10px;
 }
 
@@ -760,13 +760,37 @@ input[type="search"] {
   font-size: 0.78rem;
 }
 
-.staff-row-details {
-  display: flex;
-  justify-content: flex-end;
-}
-
 .staff-row .ghost-button {
   min-width: 78px;
+}
+
+.role-key {
+  display: flex;
+  gap: 12px;
+  margin: -4px 0 10px;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.role-key span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.role-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.role-dot.admin {
+  background: var(--accent);
+}
+
+.role-dot.staff {
+  background: var(--blue);
 }
 
 .admin-link-copy {

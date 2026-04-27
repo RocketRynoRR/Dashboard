@@ -386,20 +386,13 @@ function createStaffRow(user) {
   meta.textContent = user.createdAt ? `Created ${new Date(user.createdAt).toLocaleDateString()}` : "Staff login";
   copy.append(title, meta);
 
-  const details = document.createElement("div");
-  details.className = "staff-row-details";
-  const state = document.createElement("span");
-  state.className = `state-pill${user.isAdmin ? " active" : ""}`;
-  state.textContent = user.isAdmin ? "Admin" : "Staff";
-  details.append(state);
-
   const remove = document.createElement("button");
   remove.className = "ghost-button danger";
   remove.type = "button";
   remove.textContent = "Remove";
   remove.addEventListener("click", () => removeStaffUser(user));
 
-  row.append(badge, copy, details, remove);
+  row.append(badge, copy, remove);
   return row;
 }
 
