@@ -74,6 +74,7 @@ h1 {
 }
 
 .status-panel {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 10px;
@@ -86,6 +87,83 @@ h1 {
   font-size: 0.9rem;
   font-weight: 700;
   white-space: nowrap;
+}
+
+.account-menu {
+  position: relative;
+  margin-left: 2px;
+}
+
+.account-button {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+  color: #fff;
+  background: var(--accent);
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.account-button:hover,
+.account-button:focus-visible {
+  box-shadow: 0 0 0 4px rgba(20, 108, 99, 0.14);
+  outline: none;
+}
+
+.account-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 20;
+  display: grid;
+  min-width: 220px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: var(--shadow);
+}
+
+.account-email {
+  margin: 0 0 6px;
+  overflow: hidden;
+  padding: 8px 9px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+  text-overflow: ellipsis;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  min-height: 38px;
+  border: 0;
+  border-radius: 8px;
+  padding: 0 9px;
+  color: var(--ink);
+  background: transparent;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 800;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus-visible {
+  background: var(--surface-strong);
+  outline: none;
+}
+
+.dropdown-item.danger {
+  color: var(--rose);
 }
 
 .status-dot {
@@ -232,6 +310,14 @@ input[type="search"] {
   box-shadow: var(--shadow);
   text-decoration: none;
   transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.folder-card {
+  width: 100%;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
 }
 
 .link-card:hover,
@@ -636,6 +722,16 @@ input[type="search"] {
   border-radius: 8px;
   padding: 12px;
   background: rgba(255, 255, 255, 0.72);
+}
+
+.staff-row {
+  grid-template-columns: auto 1fr auto auto;
+}
+
+.staff-list {
+  max-height: 260px;
+  overflow: auto;
+  padding-right: 2px;
 }
 
 .admin-link-copy {

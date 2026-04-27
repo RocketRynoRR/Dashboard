@@ -28,27 +28,79 @@ Deno.serve(async (request) => {
   }
 
   const supabase = createClient(supabaseUrl, serviceRoleKey);
-  const { data: userData, error: userError } = await supabase.auth.getUser(token);
-
-  if (userError || !userData.user?.email) {
-    return json({ error: "Invalid admin session." }, 401);
+  const adminEmail = await getAdminEmail(supabase, token);
+  if (!adminEmail) {
+    return json({ error: "Only dashboard admins can manage staff users." }, 403);
   }
 
-  const { data: adminRow, error: adminError } = await supabase
+  const body = await request.json().catch(() => ({}));
+  const action = String(body?.action || "create");
+
+  if (action === "list") {
+    return listUsers(supabase);
+  }
+
+  if (action === "delete") {
+    return deleteUser(supabase, body, adminEmail);
+  }
+
+  if (action === "create") {
+    return createUser(supabase, body);
+  }
+
+  return json({ error: "Unknown staff management action." }, 400);
+});
+
+async function getAdminEmail(supabase: ReturnType<typeof createClient>, token: string) {
+  const { data: userData, error: userError } = await supabase.auth.getUser(token);
+  const email = userData.user?.email;
+
+  if (userError || !email) {
+    return "";
+  }
+
+  const { data: adminRow } = await supabase
     .from("business_dashboard_admin_users")
     .select("email")
-    .ilike("email", userData.user.email)
+    .ilike("email", email)
     .maybeSingle();
+
+  return adminRow ? email.toLowerCase() : "";
+}
+
+async function listUsers(supabase: ReturnType<typeof createClient>) {
+  const { data: authUsers, error: listError } = await supabase.auth.admin.listUsers({
+    page: 1,
+    perPage: 1000
+  });
+
+  if (listError) {
+    return json({ error: listError.message }, 500);
+  }
+
+  const { data: admins, error: adminError } = await supabase
+    .from("business_dashboard_admin_users")
+    .select("email");
 
   if (adminError) {
     return json({ error: adminError.message }, 500);
   }
 
-  if (!adminRow) {
-    return json({ error: "Only dashboard admins can create staff users." }, 403);
-  }
+  const adminEmails = new Set((admins || []).map((row) => row.email.toLowerCase()));
+  const users = (authUsers.users || [])
+    .filter((user) => Boolean(user.email))
+    .map((user) => ({
+      id: user.id,
+      email: user.email,
+      isAdmin: adminEmails.has(String(user.email).toLowerCase()),
+      createdAt: user.created_at
+    }))
+    .sort((first, second) => String(first.email).localeCompare(String(second.email)));
 
-  const body = await request.json().catch(() => null);
+  return json({ users });
+}
+
+async function createUser(supabase: ReturnType<typeof createClient>, body: Record<string, unknown>) {
   const email = String(body?.email || "").trim().toLowerCase();
   const password = String(body?.password || "");
   const makeAdmin = Boolean(body?.makeAdmin);
@@ -86,7 +138,41 @@ Deno.serve(async (request) => {
     id: createdUser.user?.id,
     makeAdmin
   });
-});
+}
+
+async function deleteUser(
+  supabase: ReturnType<typeof createClient>,
+  body: Record<string, unknown>,
+  adminEmail: string
+) {
+  const userId = String(body?.userId || "");
+  const email = String(body?.email || "").trim().toLowerCase();
+
+  if (!userId || !email) {
+    return json({ error: "Missing staff user details." }, 400);
+  }
+
+  if (email === adminEmail) {
+    return json({ error: "You cannot remove your own admin login while signed in." }, 400);
+  }
+
+  const { error: adminDeleteError } = await supabase
+    .from("business_dashboard_admin_users")
+    .delete()
+    .ilike("email", email);
+
+  if (adminDeleteError) {
+    return json({ error: adminDeleteError.message }, 500);
+  }
+
+  const { error: deleteError } = await supabase.auth.admin.deleteUser(userId);
+
+  if (deleteError) {
+    return json({ error: deleteError.message }, 500);
+  }
+
+  return json({ email, deleted: true });
+}
 
 function json(payload: Record<string, unknown>, status = 200) {
   return new Response(JSON.stringify(payload), {

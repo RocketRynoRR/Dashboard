@@ -19,6 +19,13 @@ values ('you@yourbusiness.com');
 7. Confirm your Supabase project URL and publishable key are correct.
 8. Confirm `isConfigured` is `true`.
 
+If you already ran the schema before folders were added, run this small migration in Supabase SQL Editor:
+
+```sql
+alter table public.business_dashboard_links
+add column if not exists folder text not null default 'General';
+```
+
 ## Staff User Creation
 
 The admin page can create staff logins, but this requires a Supabase Edge Function because browser code must never contain the service role key.
@@ -30,7 +37,9 @@ SUPABASE_URL
 SUPABASE_SERVICE_ROLE_KEY
 ```
 
-After it is deployed, admins can create staff emails and temporary passwords from `admin.html`.
+Disable JWT verification for this function in Supabase. The browser needs CORS preflight requests to reach the function, and the function code already verifies the signed-in admin session before creating any users.
+
+After it is deployed, admins can create staff emails and temporary passwords from `admin.html`. The same function also powers the staff list and remove buttons, so redeploy it whenever `supabase/functions/create-staff-user/index.ts` changes.
 
 ## Pages
 
@@ -38,6 +47,10 @@ After it is deployed, admins can create staff emails and temporary passwords fro
 - `admin.html` is the admin editor.
 
 The admin page is protected by Supabase Auth and row level security. Any logged-in staff member can read visible links, but only emails listed in `business_dashboard_admin_users` can add or edit links.
+
+## Opening Apps
+
+Dashboard links can open installed apps only when the app supports a URL protocol. Examples include `mailto:`, `slack://`, `msteams://`, and Zoom meeting links. Browsers do not allow a GitHub Pages website to launch arbitrary local `.exe` files directly.
 
 ## Host On GitHub Pages
 
