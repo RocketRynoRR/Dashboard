@@ -78,27 +78,27 @@ function showAuthMessage(message, type = "info") {
 }
 
 function showStaffLogin() {
+  document.body.classList.remove("signed-in");
   authPanel.hidden = false;
   authForm.hidden = false;
-  accountMenu.hidden = true;
   authEmail.focus();
 }
 
 function showDashboard(session) {
   const email = session?.user?.email || "Signed in";
+  document.body.classList.add("signed-in");
   authPanel.hidden = true;
   dashboardContent.hidden = false;
   currentUser.textContent = "Signed in";
   accountEmail.textContent = email;
   accountInitials.textContent = getInitials(email);
-  accountMenu.hidden = false;
   closeAccountMenu();
 }
 
 function showLogin() {
   dashboardContent.hidden = true;
   currentUser.textContent = "Sign in required";
-  accountMenu.hidden = true;
+  document.body.classList.remove("signed-in");
   closeAccountMenu();
   showStaffLogin();
 }

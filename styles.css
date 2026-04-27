@@ -49,6 +49,12 @@ a {
   padding: 22px 0 30px;
 }
 
+.header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .eyebrow {
   margin: 0 0 8px;
   color: var(--accent);
@@ -90,8 +96,12 @@ h1 {
 }
 
 .account-menu {
+  display: none;
   position: relative;
-  margin-left: 2px;
+}
+
+.signed-in .account-menu {
+  display: block;
 }
 
 .account-button {
@@ -770,7 +780,8 @@ input[type="search"] {
   }
 
   .status-panel,
-  .category-tabs {
+  .category-tabs,
+  .header-actions {
     justify-self: start;
   }
 
