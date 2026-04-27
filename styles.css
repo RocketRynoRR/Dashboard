@@ -354,6 +354,45 @@ input[type="search"] {
   font-size: 1.35rem;
 }
 
+.login-options {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.login-option {
+  display: grid;
+  gap: 6px;
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 16px;
+  color: inherit;
+  background: rgba(255, 255, 255, 0.72);
+  font: inherit;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.login-option:hover,
+.login-option:focus-visible {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(20, 108, 99, 0.12);
+  outline: none;
+}
+
+.login-option-title {
+  color: var(--accent-strong);
+  font-weight: 800;
+}
+
+.login-option-copy {
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
 .auth-form,
 .editor-panel {
   display: grid;
@@ -431,6 +470,11 @@ input[type="search"] {
   align-items: start;
 }
 
+.admin-stack {
+  display: grid;
+  gap: 16px;
+}
+
 .editor-panel,
 .table-panel {
   padding: 18px;
@@ -442,6 +486,10 @@ input[type="search"] {
   justify-content: space-between;
   gap: 14px;
   margin-bottom: 14px;
+}
+
+.panel-head.compact {
+  margin-bottom: 0;
 }
 
 .link-list {

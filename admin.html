@@ -41,53 +41,78 @@
       </section>
 
       <section class="admin-layout" id="adminContent" hidden>
-        <form class="editor-panel" id="linkForm">
-          <div class="panel-head">
-            <div>
-              <p class="eyebrow">Link details</p>
-              <h2 id="formTitle">Add link</h2>
+        <div class="admin-stack">
+          <form class="editor-panel" id="linkForm">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Link details</p>
+                <h2 id="formTitle">Add link</h2>
+              </div>
+              <button class="ghost-button" id="resetFormButton" type="button">New</button>
             </div>
-            <button class="ghost-button" id="resetFormButton" type="button">New</button>
-          </div>
 
-          <input id="linkId" type="hidden">
-          <label>
-            Title
-            <input id="titleInput" type="text" required>
-          </label>
-          <label>
-            URL
-            <input id="urlInput" type="text" placeholder="https://example.com or mailto:team@example.com" required>
-          </label>
-          <label>
-            Category
-            <input id="categoryInput" type="text" placeholder="Operations" required>
-          </label>
-          <label>
-            Note
-            <textarea id="noteInput" rows="3" placeholder="Short description for your team"></textarea>
-          </label>
-          <div class="form-row">
+            <input id="linkId" type="hidden">
             <label>
-              Icon
-              <input id="iconInput" type="text" maxlength="3" placeholder="A">
+              Title
+              <input id="titleInput" type="text" required>
             </label>
             <label>
-              Color
-              <input id="colorInput" type="color" value="#146c63">
+              URL
+              <input id="urlInput" type="text" placeholder="https://example.com or mailto:team@example.com" required>
             </label>
             <label>
-              Sort
-              <input id="sortInput" type="number" min="0" step="1" value="0">
+              Category
+              <input id="categoryInput" type="text" placeholder="Operations" required>
             </label>
-          </div>
-          <label class="check-row">
-            <input id="activeInput" type="checkbox" checked>
-            Show on dashboard
-          </label>
-          <button class="primary-button" type="submit">Save link</button>
-          <p class="form-message" id="formMessage" hidden></p>
-        </form>
+            <label>
+              Note
+              <textarea id="noteInput" rows="3" placeholder="Short description for your team"></textarea>
+            </label>
+            <div class="form-row">
+              <label>
+                Icon
+                <input id="iconInput" type="text" maxlength="3" placeholder="A">
+              </label>
+              <label>
+                Color
+                <input id="colorInput" type="color" value="#146c63">
+              </label>
+              <label>
+                Sort
+                <input id="sortInput" type="number" min="0" step="1" value="0">
+              </label>
+            </div>
+            <label class="check-row">
+              <input id="activeInput" type="checkbox" checked>
+              Show on dashboard
+            </label>
+            <button class="primary-button" type="submit">Save link</button>
+            <p class="form-message" id="formMessage" hidden></p>
+          </form>
+
+          <form class="editor-panel" id="staffForm">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Staff access</p>
+                <h2>Create staff login</h2>
+              </div>
+            </div>
+            <label>
+              Staff email
+              <input id="staffEmailInput" type="email" autocomplete="off" required>
+            </label>
+            <label>
+              Temporary password
+              <input id="staffPasswordInput" type="password" autocomplete="new-password" minlength="8" required>
+            </label>
+            <label class="check-row">
+              <input id="staffAdminInput" type="checkbox">
+              Also make this user an admin
+            </label>
+            <button class="primary-button" type="submit">Create staff user</button>
+            <p class="form-message" id="staffMessage" hidden></p>
+          </form>
+        </div>
 
         <section class="table-panel" aria-labelledby="links-list-title">
           <div class="panel-head">

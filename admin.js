@@ -13,6 +13,11 @@ const formMessage = document.querySelector("#formMessage");
 const adminLinkList = document.querySelector("#adminLinkList");
 const refreshButton = document.querySelector("#refreshButton");
 const resetFormButton = document.querySelector("#resetFormButton");
+const staffForm = document.querySelector("#staffForm");
+const staffEmailInput = document.querySelector("#staffEmailInput");
+const staffPasswordInput = document.querySelector("#staffPasswordInput");
+const staffAdminInput = document.querySelector("#staffAdminInput");
+const staffMessage = document.querySelector("#staffMessage");
 
 const fields = {
   id: document.querySelector("#linkId"),
@@ -272,5 +277,49 @@ linkForm.addEventListener("submit", async (event) => {
 
 refreshButton.addEventListener("click", loadAdminLinks);
 resetFormButton.addEventListener("click", resetForm);
+
+staffForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  showMessage(staffMessage, "Creating staff user...");
+
+  const { data: sessionData } = await adminClient.auth.getSession();
+  const accessToken = sessionData.session?.access_token;
+  if (!accessToken) {
+    showMessage(staffMessage, "Please sign in again before creating staff users.", "error");
+    return;
+  }
+
+  const response = await fetch(`${window.SUPABASE_CONFIG.url}/functions/v1/create-staff-user`, {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${accessToken}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      email: staffEmailInput.value.trim(),
+      password: staffPasswordInput.value,
+      makeAdmin: staffAdminInput.checked
+    })
+  });
+
+  let result = {};
+  try {
+    result = await response.json();
+  } catch (error) {
+    result = { error: "The create-staff-user function did not return JSON." };
+  }
+
+  if (!response.ok) {
+    showMessage(
+      staffMessage,
+      result.error || "Could not create staff user. Check that the Edge Function is deployed.",
+      "error"
+    );
+    return;
+  }
+
+  staffForm.reset();
+  showMessage(staffMessage, `Created login for ${result.email}.`, "success");
+});
 
 initAdmin();

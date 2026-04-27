@@ -24,9 +24,29 @@
       </section>
 
       <section class="auth-panel" id="authPanel" aria-labelledby="login-title">
-        <h2 id="login-title">Staff login</h2>
-        <p>Sign in to access the team dashboard.</p>
-        <form class="auth-form" id="authForm">
+        <div id="loginChoice">
+          <h2 id="login-title">Choose login</h2>
+          <p>Select how you want to access the dashboard.</p>
+          <div class="login-options">
+            <button class="login-option" id="showStaffLoginButton" type="button">
+              <span class="login-option-title">Staff login</span>
+              <span class="login-option-copy">View the team dashboard and open saved links.</span>
+            </button>
+            <a class="login-option" href="admin.html">
+              <span class="login-option-title">Admin login</span>
+              <span class="login-option-copy">Manage, add, hide, reorder, or delete dashboard links.</span>
+            </a>
+          </div>
+        </div>
+
+        <form class="auth-form" id="authForm" hidden>
+          <div class="panel-head compact">
+            <div>
+              <p class="eyebrow">Staff</p>
+              <h2>Staff login</h2>
+            </div>
+            <button class="ghost-button" id="backToChoiceButton" type="button">Back</button>
+          </div>
           <label>
             Email
             <input id="authEmail" type="email" autocomplete="email" required>

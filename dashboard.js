@@ -40,6 +40,9 @@ const emptyState = document.querySelector("#emptyState");
 const loadingState = document.querySelector("#loadingState");
 const authPanel = document.querySelector("#authPanel");
 const authForm = document.querySelector("#authForm");
+const loginChoice = document.querySelector("#loginChoice");
+const showStaffLoginButton = document.querySelector("#showStaffLoginButton");
+const backToChoiceButton = document.querySelector("#backToChoiceButton");
 const authEmail = document.querySelector("#authEmail");
 const authPassword = document.querySelector("#authPassword");
 const authMessage = document.querySelector("#authMessage");
@@ -66,6 +69,20 @@ function showAuthMessage(message, type = "info") {
   authMessage.hidden = !message;
 }
 
+function showLoginChoice() {
+  authPanel.hidden = false;
+  loginChoice.hidden = false;
+  authForm.hidden = true;
+  showAuthMessage("");
+}
+
+function showStaffLogin() {
+  authPanel.hidden = false;
+  loginChoice.hidden = true;
+  authForm.hidden = false;
+  authEmail.focus();
+}
+
 function showDashboard(session) {
   authPanel.hidden = true;
   dashboardContent.hidden = false;
@@ -73,9 +90,9 @@ function showDashboard(session) {
 }
 
 function showLogin() {
-  authPanel.hidden = false;
   dashboardContent.hidden = true;
   currentUser.textContent = "Sign in required";
+  showLoginChoice();
 }
 
 function getCategories() {
@@ -200,9 +217,11 @@ async function loadLinks() {
 async function init() {
   try {
     searchInput.addEventListener("input", renderLinks);
+    showStaffLoginButton.addEventListener("click", showStaffLogin);
+    backToChoiceButton.addEventListener("click", showLoginChoice);
 
     if (!isSupabaseConfigured()) {
-      authPanel.hidden = false;
+      showLoginChoice();
       dashboardContent.hidden = true;
       currentUser.textContent = "Setup needed";
       showAuthMessage(
