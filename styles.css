@@ -3,7 +3,6 @@
   --ink: #17201c;
   --muted: #64706a;
   --line: #d8d3c7;
-  --surface: #ffffff;
   --surface-strong: #f2efe7;
   --accent: #146c63;
   --accent-strong: #0d4f49;
@@ -93,6 +92,13 @@ h1 {
   box-shadow: 0 0 0 5px rgba(44, 159, 114, 0.15);
 }
 
+.toolbar-line {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 14px;
+  align-items: start;
+}
+
 .controls {
   display: grid;
   grid-template-columns: minmax(240px, 390px) 1fr;
@@ -116,22 +122,27 @@ h1 {
   pointer-events: none;
 }
 
+input,
+textarea {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.92);
+  font: inherit;
+  outline: none;
+}
+
+input:focus,
+textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(20, 108, 99, 0.14);
+}
+
 input[type="search"] {
   width: 100%;
   height: 48px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
   padding: 0 16px 0 42px;
-  color: var(--ink);
-  background: rgba(255, 255, 255, 0.85);
-  font: inherit;
-  outline: none;
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.9) inset;
-}
-
-input[type="search"]:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 4px rgba(20, 108, 99, 0.14);
 }
 
 .category-tabs {
@@ -141,24 +152,62 @@ input[type="search"]:focus {
   gap: 8px;
 }
 
-.tab-button {
+.tab-button,
+.ghost-link,
+.ghost-button,
+.primary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-height: 38px;
-  border: 1px solid var(--line);
   border-radius: 999px;
   padding: 0 14px;
-  color: var(--muted);
-  background: rgba(255, 255, 255, 0.62);
   font: inherit;
   font-size: 0.9rem;
   font-weight: 800;
+  text-decoration: none;
   cursor: pointer;
 }
 
+.tab-button,
+.ghost-link,
+.ghost-button {
+  border: 1px solid var(--line);
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.62);
+}
+
 .tab-button:hover,
-.tab-button.is-active {
+.tab-button.is-active,
+.primary-button {
   border-color: var(--accent);
   color: #fff;
   background: var(--accent);
+}
+
+.top-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.ghost-link,
+.ghost-button,
+.primary-button {
+  border-radius: 8px;
+  min-height: 42px;
+}
+
+.ghost-link,
+.ghost-button {
+  color: var(--accent-strong);
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.ghost-button.danger {
+  color: var(--rose);
 }
 
 .link-grid {
@@ -208,11 +257,14 @@ input[type="search"]:focus {
   font-weight: 800;
 }
 
-.category-pill {
-  max-width: 130px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.icon-badge.small {
+  width: 36px;
+  height: 36px;
+  font-size: 1rem;
+}
+
+.category-pill,
+.state-pill {
   border-radius: 999px;
   padding: 5px 9px;
   color: var(--muted);
@@ -220,6 +272,18 @@ input[type="search"]:focus {
   font-size: 0.72rem;
   font-weight: 800;
   text-transform: uppercase;
+}
+
+.category-pill {
+  max-width: 130px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.state-pill.active {
+  color: var(--accent-strong);
+  background: rgba(20, 108, 99, 0.12);
 }
 
 .link-card h2 {
@@ -250,12 +314,19 @@ input[type="search"]:focus {
   font-size: 1.15rem;
 }
 
+.empty-state,
+.auth-panel,
+.editor-panel,
+.table-panel {
+  border: 1px solid rgba(23, 32, 28, 0.09);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: var(--shadow);
+}
+
 .empty-state {
   margin-top: 20px;
   padding: 26px;
-  border: 1px dashed var(--line);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.56);
   text-align: center;
 }
 
@@ -264,9 +335,150 @@ input[type="search"]:focus {
   font-size: 1.1rem;
 }
 
-.empty-state p {
-  margin: 0;
+.empty-state p,
+.auth-panel p,
+.loading-state,
+.muted-text {
   color: var(--muted);
+}
+
+.auth-panel {
+  max-width: 460px;
+  padding: 24px;
+}
+
+.auth-panel h2,
+.editor-panel h2,
+.table-panel h2 {
+  margin: 0;
+  font-size: 1.35rem;
+}
+
+.auth-form,
+.editor-panel {
+  display: grid;
+  gap: 14px;
+}
+
+.auth-form label,
+.editor-panel label {
+  display: grid;
+  gap: 7px;
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+
+.auth-form input,
+.editor-panel input,
+.editor-panel textarea {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+}
+
+.editor-panel textarea {
+  resize: vertical;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 92px 92px;
+  gap: 10px;
+}
+
+.check-row {
+  display: flex !important;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 10px !important;
+}
+
+.check-row input {
+  width: 18px;
+  min-height: 18px;
+}
+
+.form-message {
+  margin: 0;
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: rgba(45, 99, 150, 0.12);
+  color: var(--blue);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.form-message[data-type="error"] {
+  background: rgba(167, 71, 85, 0.12);
+  color: var(--rose);
+}
+
+.form-message[data-type="success"] {
+  background: rgba(20, 108, 99, 0.12);
+  color: var(--accent-strong);
+}
+
+.loading-state {
+  padding: 12px 0;
+  font-weight: 700;
+}
+
+.admin-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 380px) 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+.editor-panel,
+.table-panel {
+  padding: 18px;
+}
+
+.panel-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.link-list {
+  display: grid;
+  gap: 10px;
+}
+
+.admin-link-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto auto;
+  gap: 12px;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.admin-link-copy {
+  min-width: 0;
+}
+
+.admin-link-copy h3,
+.admin-link-copy p {
+  margin: 0;
+}
+
+.admin-link-copy h3 {
+  font-size: 1rem;
+}
+
+.admin-link-copy p {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 0.84rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 @media (max-width: 760px) {
@@ -276,7 +488,9 @@ input[type="search"]:focus {
   }
 
   .topbar,
-  .controls {
+  .controls,
+  .toolbar-line,
+  .admin-layout {
     grid-template-columns: 1fr;
     display: grid;
   }
@@ -286,11 +500,14 @@ input[type="search"]:focus {
     justify-self: start;
   }
 
-  .category-tabs {
+  .category-tabs,
+  .top-actions {
     justify-content: flex-start;
   }
 
-  .link-grid {
+  .link-grid,
+  .form-row,
+  .admin-link-row {
     grid-template-columns: 1fr;
   }
 }

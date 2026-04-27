@@ -19,26 +19,54 @@
         </div>
         <div class="status-panel" aria-label="Dashboard status">
           <span class="status-dot"></span>
-          <span>Ready for GitHub Pages</span>
+          <span id="currentUser">Checking access</span>
         </div>
       </section>
 
-      <section class="controls" aria-label="Dashboard controls">
-        <label class="search-wrap" for="searchInput">
-          <span class="search-icon" aria-hidden="true">⌕</span>
-          <input id="searchInput" type="search" placeholder="Search links, categories, or notes">
-        </label>
-        <div class="category-tabs" id="categoryTabs" aria-label="Filter categories"></div>
+      <section class="auth-panel" id="authPanel" aria-labelledby="login-title" hidden>
+        <h2 id="login-title">Staff login</h2>
+        <p>Sign in to access the team dashboard.</p>
+        <form class="auth-form" id="authForm">
+          <label>
+            Email
+            <input id="authEmail" type="email" autocomplete="email" required>
+          </label>
+          <label>
+            Password
+            <input id="authPassword" type="password" autocomplete="current-password" required>
+          </label>
+          <button class="primary-button" type="submit">Sign in</button>
+          <p class="form-message" id="authMessage" hidden></p>
+        </form>
       </section>
 
-      <section class="link-grid" id="linkGrid" aria-live="polite"></section>
+      <section id="dashboardContent" hidden>
+        <div class="toolbar-line">
+          <section class="controls" aria-label="Dashboard controls">
+            <label class="search-wrap" for="searchInput">
+              <span class="search-icon" aria-hidden="true">?</span>
+              <input id="searchInput" type="search" placeholder="Search links, categories, or notes">
+            </label>
+            <div class="category-tabs" id="categoryTabs" aria-label="Filter categories"></div>
+          </section>
+          <div class="top-actions">
+            <a class="ghost-link" href="admin.html">Admin</a>
+            <button class="tab-button" id="signOutButton" type="button">Sign out</button>
+          </div>
+        </div>
 
-      <section class="empty-state" id="emptyState" hidden>
-        <h2>No matching links</h2>
-        <p>Try a different search or category.</p>
+        <section class="loading-state" id="loadingState" hidden>Loading links...</section>
+        <section class="link-grid" id="linkGrid" aria-live="polite"></section>
+
+        <section class="empty-state" id="emptyState" hidden>
+          <h2>No matching links</h2>
+          <p>Try a different search or category.</p>
+        </section>
       </section>
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
     <script src="dashboard.js"></script>
   </body>
 </html>

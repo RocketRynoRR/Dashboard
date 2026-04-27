@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin | Team Links Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="shell">
+      <section class="topbar" aria-labelledby="page-title">
+        <div>
+          <p class="eyebrow">Admin</p>
+          <h1 id="page-title">Manage links</h1>
+          <p class="intro">Add, update, hide, and reorder the shortcuts your team sees on the dashboard.</p>
+        </div>
+        <nav class="top-actions" aria-label="Admin navigation">
+          <a class="ghost-link" href="index.html">Dashboard</a>
+          <button class="tab-button" id="adminSignOutButton" type="button" hidden>Sign out</button>
+        </nav>
+      </section>
+
+      <section class="auth-panel" id="adminAuthPanel" aria-labelledby="admin-login-title">
+        <h2 id="admin-login-title">Admin login</h2>
+        <p>Use your Supabase admin account to manage dashboard links.</p>
+        <form class="auth-form" id="adminAuthForm">
+          <label>
+            Email
+            <input id="adminEmail" type="email" autocomplete="email" required>
+          </label>
+          <label>
+            Password
+            <input id="adminPassword" type="password" autocomplete="current-password" required>
+          </label>
+          <button class="primary-button" type="submit">Sign in</button>
+          <p class="form-message" id="adminAuthMessage" hidden></p>
+        </form>
+      </section>
+
+      <section class="admin-layout" id="adminContent" hidden>
+        <form class="editor-panel" id="linkForm">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Link details</p>
+              <h2 id="formTitle">Add link</h2>
+            </div>
+            <button class="ghost-button" id="resetFormButton" type="button">New</button>
+          </div>
+
+          <input id="linkId" type="hidden">
+          <label>
+            Title
+            <input id="titleInput" type="text" required>
+          </label>
+          <label>
+            URL
+            <input id="urlInput" type="text" placeholder="https://example.com or mailto:team@example.com" required>
+          </label>
+          <label>
+            Category
+            <input id="categoryInput" type="text" placeholder="Operations" required>
+          </label>
+          <label>
+            Note
+            <textarea id="noteInput" rows="3" placeholder="Short description for your team"></textarea>
+          </label>
+          <div class="form-row">
+            <label>
+              Icon
+              <input id="iconInput" type="text" maxlength="3" placeholder="A">
+            </label>
+            <label>
+              Color
+              <input id="colorInput" type="color" value="#146c63">
+            </label>
+            <label>
+              Sort
+              <input id="sortInput" type="number" min="0" step="1" value="0">
+            </label>
+          </div>
+          <label class="check-row">
+            <input id="activeInput" type="checkbox" checked>
+            Show on dashboard
+          </label>
+          <button class="primary-button" type="submit">Save link</button>
+          <p class="form-message" id="formMessage" hidden></p>
+        </form>
+
+        <section class="table-panel" aria-labelledby="links-list-title">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Database</p>
+              <h2 id="links-list-title">Saved links</h2>
+            </div>
+            <button class="ghost-button" id="refreshButton" type="button">Refresh</button>
+          </div>
+          <div class="link-list" id="adminLinkList"></div>
+        </section>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="admin.js"></script>
+  </body>
+</html>
