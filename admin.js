@@ -18,11 +18,17 @@ const staffEmailInput = document.querySelector("#staffEmailInput");
 const staffPasswordInput = document.querySelector("#staffPasswordInput");
 const staffAdminInput = document.querySelector("#staffAdminInput");
 const staffMessage = document.querySelector("#staffMessage");
+const staffSubmitButton = staffForm.querySelector("button[type='submit']");
+const staffList = document.querySelector("#staffList");
+const refreshStaffButton = document.querySelector("#refreshStaffButton");
+const testStaffFunctionButton = document.querySelector("#testStaffFunctionButton");
+const staffListMessage = document.querySelector("#staffListMessage");
 
 const fields = {
   id: document.querySelector("#linkId"),
   title: document.querySelector("#titleInput"),
   url: document.querySelector("#urlInput"),
+  folder: document.querySelector("#folderInput"),
   category: document.querySelector("#categoryInput"),
   note: document.querySelector("#noteInput"),
   icon: document.querySelector("#iconInput"),
@@ -56,6 +62,7 @@ function resetForm() {
   fields.id.value = "";
   fields.title.value = "";
   fields.url.value = "";
+  fields.folder.value = "";
   fields.category.value = "";
   fields.note.value = "";
   fields.icon.value = "";
@@ -70,6 +77,7 @@ function fillForm(link) {
   fields.id.value = link.id;
   fields.title.value = link.title || "";
   fields.url.value = link.url || "";
+  fields.folder.value = link.folder || "";
   fields.category.value = link.category || "";
   fields.note.value = link.note || "";
   fields.icon.value = link.icon || "";
@@ -85,6 +93,7 @@ function getFormPayload() {
   return {
     title,
     url: fields.url.value.trim(),
+    folder: fields.folder.value.trim() || "General",
     category: fields.category.value.trim(),
     note: fields.note.value.trim(),
     icon: fields.icon.value.trim() || title.charAt(0).toUpperCase(),
@@ -113,6 +122,53 @@ async function confirmAdminAccess() {
   return !error && data === true;
 }
 
+async function getAccessToken() {
+  const { data: sessionData } = await adminClient.auth.getSession();
+  return sessionData.session?.access_token || "";
+}
+
+async function callStaffFunction(payload) {
+  const accessToken = await getAccessToken();
+  if (!accessToken) {
+    throw new Error("Please sign in again before managing staff users.");
+  }
+
+  const controller = new AbortController();
+  const timeoutId = window.setTimeout(() => controller.abort(), 12000);
+
+  try {
+    const response = await fetch(`${window.SUPABASE_CONFIG.url}/functions/v1/create-staff-user`, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${accessToken}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload),
+      signal: controller.signal
+    });
+
+    let result = {};
+    try {
+      result = await response.json();
+    } catch (error) {
+      result = { error: "The staff management function did not return JSON." };
+    }
+
+    if (!response.ok) {
+      throw new Error(result.error || `Staff management failed with status ${response.status}.`);
+    }
+
+    return result;
+  } catch (error) {
+    if (error.name === "AbortError") {
+      throw new Error("The staff management function did not respond. Check that it is deployed and JWT verification is disabled.");
+    }
+    throw error;
+  } finally {
+    window.clearTimeout(timeoutId);
+  }
+}
+
 function createLinkRow(link) {
   const row = document.createElement("article");
   row.className = "admin-link-row";
@@ -127,7 +183,7 @@ function createLinkRow(link) {
   const title = document.createElement("h3");
   title.textContent = link.title;
   const meta = document.createElement("p");
-  meta.textContent = `${link.category || "General"} - ${link.url}`;
+  meta.textContent = `${link.folder || "General"} / ${link.category || "General"} - ${link.url}`;
   copy.append(title, meta);
 
   const state = document.createElement("span");
@@ -175,7 +231,7 @@ async function loadAdminLinks() {
 
   const { data, error } = await adminClient
     .from("business_dashboard_links")
-    .select("id,title,url,category,note,icon,color,sort_order,is_active")
+    .select("id,title,url,folder,category,note,icon,color,sort_order,is_active")
     .order("sort_order", { ascending: true })
     .order("title", { ascending: true });
 
@@ -215,6 +271,7 @@ async function initAdmin() {
 
     showAdmin();
     await loadAdminLinks();
+    await loadStaffUsers();
   } else {
     showLogin();
   }
@@ -248,6 +305,7 @@ adminAuthForm.addEventListener("submit", async (event) => {
   showMessage(adminAuthMessage, "");
   showAdmin(data.session);
   await loadAdminLinks();
+  await loadStaffUsers();
 });
 
 adminSignOutButton.addEventListener("click", async () => {
@@ -279,49 +337,110 @@ linkForm.addEventListener("submit", async (event) => {
 
 refreshButton.addEventListener("click", loadAdminLinks);
 resetFormButton.addEventListener("click", resetForm);
+refreshStaffButton.addEventListener("click", loadStaffUsers);
+testStaffFunctionButton.addEventListener("click", testStaffFunction);
 
 staffForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   showMessage(staffMessage, "Creating staff user...");
+  staffSubmitButton.disabled = true;
 
-  const { data: sessionData } = await adminClient.auth.getSession();
-  const accessToken = sessionData.session?.access_token;
-  if (!accessToken) {
-    showMessage(staffMessage, "Please sign in again before creating staff users.", "error");
-    return;
-  }
-
-  const response = await fetch(`${window.SUPABASE_CONFIG.url}/functions/v1/create-staff-user`, {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${accessToken}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
+  try {
+    const result = await callStaffFunction({
+      action: "create",
       email: staffEmailInput.value.trim(),
       password: staffPasswordInput.value,
       makeAdmin: staffAdminInput.checked
-    })
-  });
+    });
 
-  let result = {};
-  try {
-    result = await response.json();
+    staffForm.reset();
+    showMessage(staffMessage, `Created login for ${result.email}.`, "success");
+    await loadStaffUsers();
   } catch (error) {
-    result = { error: "The create-staff-user function did not return JSON." };
+    showMessage(staffMessage, error.message, "error");
+  } finally {
+    staffSubmitButton.disabled = false;
   }
+});
 
-  if (!response.ok) {
-    showMessage(
-      staffMessage,
-      result.error || "Could not create staff user. Check that the Edge Function is deployed.",
-      "error"
-    );
+function createStaffRow(user) {
+  const row = document.createElement("article");
+  row.className = "admin-link-row staff-row";
+
+  const badge = document.createElement("span");
+  badge.className = "icon-badge small";
+  badge.style.background = user.isAdmin ? "#146c63" : "#2d6396";
+  badge.textContent = user.isAdmin ? "A" : "S";
+
+  const copy = document.createElement("div");
+  copy.className = "admin-link-copy";
+  const title = document.createElement("h3");
+  title.textContent = user.email;
+  const meta = document.createElement("p");
+  meta.textContent = user.createdAt ? `Created ${new Date(user.createdAt).toLocaleDateString()}` : "Staff login";
+  copy.append(title, meta);
+
+  const state = document.createElement("span");
+  state.className = `state-pill${user.isAdmin ? " active" : ""}`;
+  state.textContent = user.isAdmin ? "Admin" : "Staff";
+
+  const remove = document.createElement("button");
+  remove.className = "ghost-button danger";
+  remove.type = "button";
+  remove.textContent = "Remove";
+  remove.addEventListener("click", () => removeStaffUser(user));
+
+  row.append(badge, copy, state, remove);
+  return row;
+}
+
+async function loadStaffUsers() {
+  staffList.innerHTML = "<p class=\"muted-text\">Loading staff...</p>";
+  showMessage(staffListMessage, "");
+
+  try {
+    const result = await callStaffFunction({ action: "list" });
+    staffList.innerHTML = "";
+
+    if (!result.users?.length) {
+      staffList.innerHTML = "<p class=\"muted-text\">No staff users found.</p>";
+      return;
+    }
+
+    result.users.forEach((user) => staffList.append(createStaffRow(user)));
+  } catch (error) {
+    staffList.innerHTML = "";
+    showMessage(staffListMessage, error.message, "error");
+  }
+}
+
+async function removeStaffUser(user) {
+  const confirmed = window.confirm(`Remove staff access for ${user.email}?`);
+  if (!confirmed) {
     return;
   }
 
-  staffForm.reset();
-  showMessage(staffMessage, `Created login for ${result.email}.`, "success");
-});
+  showMessage(staffListMessage, "Removing staff user...");
+
+  try {
+    await callStaffFunction({ action: "delete", userId: user.id, email: user.email });
+    showMessage(staffListMessage, `Removed ${user.email}.`, "success");
+    await loadStaffUsers();
+  } catch (error) {
+    showMessage(staffListMessage, error.message, "error");
+  }
+}
+
+async function testStaffFunction() {
+  showMessage(staffListMessage, "Testing staff management function...");
+
+  try {
+    const result = await callStaffFunction({ action: "list" });
+    const count = result.users?.length || 0;
+    showMessage(staffListMessage, `Function is working. Found ${count} staff login${count === 1 ? "" : "s"}.`, "success");
+  } catch (error) {
+    showMessage(staffListMessage, `Function test failed: ${error.message}`, "error");
+  }
+}
 
 initAdmin();

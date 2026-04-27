@@ -58,7 +58,11 @@
             </label>
             <label>
               URL
-              <input id="urlInput" type="text" placeholder="https://example.com or mailto:team@example.com" required>
+              <input id="urlInput" type="text" placeholder="https://example.com, mailto:, slack://, msteams://" required>
+            </label>
+            <label>
+              Folder
+              <input id="folderInput" type="text" placeholder="Operations" required>
             </label>
             <label>
               Category
@@ -114,6 +118,23 @@
             <p class="form-message" id="staffMessage" hidden></p>
           </form>
           </details>
+
+          <section class="editor-panel">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Staff access</p>
+                <h2>Staff list</h2>
+              </div>
+              <div class="top-actions">
+                <button class="ghost-button" id="testStaffFunctionButton" type="button">Test</button>
+                <button class="ghost-button" id="refreshStaffButton" type="button">Refresh</button>
+              </div>
+            </div>
+            <div class="link-list staff-list" id="staffList">
+              <p class="muted-text">Sign in to load staff.</p>
+            </div>
+            <p class="form-message" id="staffListMessage" hidden></p>
+          </section>
         </div>
 
         <section class="table-panel" aria-labelledby="links-list-title">
