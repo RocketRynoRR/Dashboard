@@ -95,12 +95,14 @@ function getFormPayload() {
 }
 
 function showAdmin() {
+  document.body.classList.add("admin-signed-in");
   adminAuthPanel.hidden = true;
   adminContent.hidden = false;
   adminSignOutButton.hidden = false;
 }
 
 function showLogin() {
+  document.body.classList.remove("admin-signed-in");
   adminAuthPanel.hidden = false;
   adminContent.hidden = true;
   adminSignOutButton.hidden = true;

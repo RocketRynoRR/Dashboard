@@ -16,6 +16,10 @@
   box-sizing: border-box;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
@@ -473,6 +477,132 @@ input[type="search"] {
 .admin-stack {
   display: grid;
   gap: 16px;
+}
+
+.admin-page .shell {
+  width: min(1220px, calc(100% - 40px));
+  padding: 22px 0 28px;
+}
+
+.admin-page .topbar {
+  align-items: flex-start;
+  padding: 8px 0 18px;
+}
+
+.admin-page h1 {
+  font-size: clamp(2.4rem, 4.2vw, 4.15rem);
+}
+
+.admin-page .intro {
+  margin-top: 12px;
+  line-height: 1.45;
+}
+
+.admin-page .auth-panel {
+  margin-top: 8px;
+}
+
+.admin-page.admin-signed-in #adminAuthPanel {
+  display: none !important;
+}
+
+.admin-page .admin-layout {
+  grid-template-columns: minmax(360px, 430px) 1fr;
+  gap: 14px;
+}
+
+.admin-page .admin-stack {
+  gap: 12px;
+}
+
+.admin-page .editor-panel,
+.admin-page .table-panel {
+  padding: 14px 16px;
+}
+
+.admin-page .panel-head {
+  margin-bottom: 10px;
+}
+
+.admin-page .auth-form,
+.admin-page .editor-panel {
+  gap: 10px;
+}
+
+.admin-page .auth-form label,
+.admin-page .editor-panel label {
+  gap: 5px;
+  font-size: 0.84rem;
+}
+
+.admin-page .auth-form input,
+.admin-page .editor-panel input,
+.admin-page .editor-panel textarea {
+  min-height: 38px;
+  padding: 8px 10px;
+}
+
+.admin-page .editor-panel textarea {
+  min-height: 62px;
+}
+
+.admin-page .primary-button,
+.admin-page .ghost-button,
+.admin-page .ghost-link,
+.admin-page .tab-button {
+  min-height: 38px;
+}
+
+.admin-page .form-row {
+  grid-template-columns: 1fr 92px 92px;
+}
+
+.compact-details {
+  display: block;
+}
+
+.compact-details summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.compact-details summary::-webkit-details-marker {
+  display: none;
+}
+
+.compact-details summary::after {
+  content: "Open";
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 9px 12px;
+  color: var(--accent-strong);
+  background: rgba(255, 255, 255, 0.72);
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.compact-details[open] summary {
+  margin-bottom: 12px;
+}
+
+.compact-details[open] summary::after {
+  content: "Close";
+}
+
+.summary-title {
+  display: block;
+  margin-top: 4px;
+  color: var(--ink);
+  font-size: 1.18rem;
+  font-weight: 800;
+}
+
+.compact-form {
+  gap: 10px;
 }
 
 .editor-panel,

@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
   </head>
-  <body>
+  <body class="admin-page">
     <main class="shell">
       <section class="topbar" aria-labelledby="page-title">
         <div>
@@ -90,13 +90,14 @@
             <p class="form-message" id="formMessage" hidden></p>
           </form>
 
-          <form class="editor-panel" id="staffForm">
-            <div class="panel-head">
-              <div>
-                <p class="eyebrow">Staff access</p>
-                <h2>Create staff login</h2>
-              </div>
-            </div>
+          <details class="editor-panel compact-details">
+            <summary>
+              <span>
+                <span class="eyebrow">Staff access</span>
+                <span class="summary-title">Create staff login</span>
+              </span>
+            </summary>
+          <form class="auth-form compact-form" id="staffForm">
             <label>
               Staff email
               <input id="staffEmailInput" type="email" autocomplete="off" required>
@@ -112,6 +113,7 @@
             <button class="primary-button" type="submit">Create staff user</button>
             <p class="form-message" id="staffMessage" hidden></p>
           </form>
+          </details>
         </div>
 
         <section class="table-panel" aria-labelledby="links-list-title">
