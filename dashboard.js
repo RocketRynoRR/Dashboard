@@ -56,6 +56,7 @@ const accountButton = document.querySelector("#accountButton");
 const accountDropdown = document.querySelector("#accountDropdown");
 const accountInitials = document.querySelector("#accountInitials");
 const accountEmail = document.querySelector("#accountEmail");
+const themeToggleButton = document.querySelector("#themeToggleButton");
 
 const supabaseClient = window.createDashboardClient();
 
@@ -141,6 +142,20 @@ function toggleAccountMenu() {
   } else {
     closeAccountMenu();
   }
+}
+
+function getTheme() {
+  return document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+}
+
+function setTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  window.localStorage.setItem("dashboard-theme", theme);
+  themeToggleButton.textContent = theme === "dark" ? "Light mode" : "Dark mode";
+}
+
+function toggleTheme() {
+  setTheme(getTheme() === "dark" ? "light" : "dark");
 }
 
 function getCategories() {
@@ -344,6 +359,8 @@ async function loadLinks() {
 async function init() {
   try {
     searchInput.addEventListener("input", renderLinks);
+    setTheme(getTheme());
+    themeToggleButton.addEventListener("click", toggleTheme);
     accountButton.addEventListener("click", (event) => {
       event.stopPropagation();
       toggleAccountMenu();

@@ -3,6 +3,9 @@
   --ink: #17201c;
   --muted: #64706a;
   --line: #d8d3c7;
+  --panel: rgba(255, 255, 255, 0.86);
+  --panel-strong: rgba(255, 255, 255, 0.98);
+  --field: rgba(255, 255, 255, 0.92);
   --surface-strong: #f2efe7;
   --accent: #146c63;
   --accent-strong: #0d4f49;
@@ -10,6 +13,23 @@
   --rose: #a74755;
   --blue: #2d6396;
   --shadow: 0 18px 50px rgba(29, 35, 31, 0.11);
+}
+
+:root[data-theme="dark"] {
+  --bg: #101714;
+  --ink: #eef6f1;
+  --muted: #9eb0a7;
+  --line: #304039;
+  --panel: rgba(23, 32, 28, 0.9);
+  --panel-strong: rgba(19, 27, 24, 0.98);
+  --field: rgba(15, 22, 19, 0.94);
+  --surface-strong: #1d2a25;
+  --accent: #2db5a5;
+  --accent-strong: #7ee3d7;
+  --amber: #e3a039;
+  --rose: #ff7488;
+  --blue: #61a7e8;
+  --shadow: 0 18px 50px rgba(0, 0, 0, 0.32);
 }
 
 * {
@@ -28,6 +48,13 @@ body {
   background:
     linear-gradient(135deg, rgba(20, 108, 99, 0.12), transparent 34%),
     linear-gradient(315deg, rgba(184, 107, 24, 0.11), transparent 30%),
+    var(--bg);
+}
+
+:root[data-theme="dark"] body {
+  background:
+    linear-gradient(135deg, rgba(45, 181, 165, 0.13), transparent 34%),
+    linear-gradient(315deg, rgba(97, 167, 232, 0.1), transparent 30%),
     var(--bg);
 }
 
@@ -92,7 +119,7 @@ h1 {
   padding: 0 10px;
   border: 1px solid var(--line);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.72);
+  background: var(--panel);
   color: var(--muted);
   font-size: 0.86rem;
   font-weight: 700;
@@ -140,6 +167,7 @@ h1 {
   border-radius: 8px;
   padding: 8px;
   background: rgba(255, 255, 255, 0.98);
+  background: var(--panel-strong);
   box-shadow: var(--shadow);
 }
 
@@ -224,6 +252,7 @@ textarea {
   border-radius: 8px;
   color: var(--ink);
   background: rgba(255, 255, 255, 0.92);
+  background: var(--field);
   font: inherit;
   outline: none;
 }
@@ -271,6 +300,7 @@ input[type="search"] {
   border: 1px solid var(--line);
   color: var(--muted);
   background: rgba(255, 255, 255, 0.62);
+  background: var(--panel);
 }
 
 .tab-button:hover,
@@ -300,6 +330,7 @@ input[type="search"] {
 .ghost-button {
   color: var(--accent-strong);
   background: rgba(255, 255, 255, 0.72);
+  background: var(--panel);
 }
 
 .ghost-button.danger {
@@ -321,6 +352,7 @@ input[type="search"] {
   border: 1px solid rgba(23, 32, 28, 0.09);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.86);
+  background: var(--panel);
   box-shadow: var(--shadow);
   text-decoration: none;
   transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
@@ -425,6 +457,7 @@ input[type="search"] {
   border: 1px solid rgba(23, 32, 28, 0.09);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.86);
+  background: var(--panel);
   box-shadow: var(--shadow);
 }
 
@@ -473,6 +506,7 @@ input[type="search"] {
   padding: 16px;
   color: inherit;
   background: rgba(255, 255, 255, 0.72);
+  background: var(--panel);
   font: inherit;
   text-align: left;
   text-decoration: none;
@@ -681,6 +715,7 @@ input[type="search"] {
   padding: 9px 12px;
   color: var(--accent-strong);
   background: rgba(255, 255, 255, 0.72);
+  background: var(--panel);
   font-size: 0.9rem;
   font-weight: 800;
 }
@@ -736,6 +771,7 @@ input[type="search"] {
   border-radius: 8px;
   padding: 12px;
   background: rgba(255, 255, 255, 0.72);
+  background: var(--panel);
 }
 
 .staff-row {

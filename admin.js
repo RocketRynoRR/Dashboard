@@ -23,6 +23,7 @@ const staffList = document.querySelector("#staffList");
 const refreshStaffButton = document.querySelector("#refreshStaffButton");
 const testStaffFunctionButton = document.querySelector("#testStaffFunctionButton");
 const staffListMessage = document.querySelector("#staffListMessage");
+const adminThemeToggleButton = document.querySelector("#adminThemeToggleButton");
 
 const fields = {
   id: document.querySelector("#linkId"),
@@ -41,6 +42,20 @@ function showMessage(element, message, type = "info") {
   element.textContent = message;
   element.dataset.type = type;
   element.hidden = !message;
+}
+
+function getTheme() {
+  return document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+}
+
+function setTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  window.localStorage.setItem("dashboard-theme", theme);
+  adminThemeToggleButton.textContent = theme === "dark" ? "Light mode" : "Dark mode";
+}
+
+function toggleTheme() {
+  setTheme(getTheme() === "dark" ? "light" : "dark");
 }
 
 function requireSupabaseConfig() {
@@ -345,6 +360,8 @@ refreshButton.addEventListener("click", loadAdminLinks);
 resetFormButton.addEventListener("click", resetForm);
 refreshStaffButton.addEventListener("click", loadStaffUsers);
 testStaffFunctionButton.addEventListener("click", testStaffFunction);
+adminThemeToggleButton.addEventListener("click", toggleTheme);
+setTheme(getTheme());
 
 staffForm.addEventListener("submit", async (event) => {
   event.preventDefault();
