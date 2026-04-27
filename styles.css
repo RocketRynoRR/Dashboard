@@ -739,13 +739,34 @@ input[type="search"] {
 }
 
 .staff-row {
-  grid-template-columns: auto 1fr auto auto;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  gap: 10px;
 }
 
 .staff-list {
   max-height: 260px;
   overflow: auto;
   padding-right: 2px;
+}
+
+.staff-row .admin-link-copy h3 {
+  overflow: hidden;
+  font-size: 0.95rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.staff-row .admin-link-copy p {
+  font-size: 0.78rem;
+}
+
+.staff-row-details {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.staff-row .ghost-button {
+  min-width: 78px;
 }
 
 .admin-link-copy {
