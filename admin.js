@@ -33,7 +33,7 @@ function showMessage(element, message, type = "info") {
 }
 
 function requireSupabaseConfig() {
-  if (window.SUPABASE_CONFIG.isConfigured) {
+  if (window.SUPABASE_CONFIG.isConfigured && adminClient) {
     return true;
   }
 
@@ -41,7 +41,7 @@ function requireSupabaseConfig() {
   adminContent.hidden = true;
   showMessage(
     adminAuthMessage,
-    "Add your Supabase URL and publishable key in supabase-config.js, then set isConfigured to true.",
+    "Supabase could not start. Check your internet connection and make sure the Supabase script is loading.",
     "error"
   );
   return false;

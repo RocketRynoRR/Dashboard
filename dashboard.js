@@ -53,7 +53,7 @@ let links = [];
 let activeCategory = "All";
 
 function isSupabaseConfigured() {
-  return window.SUPABASE_CONFIG.isConfigured;
+  return window.SUPABASE_CONFIG.isConfigured && Boolean(supabaseClient);
 }
 
 function setLoading(isLoading) {
@@ -198,28 +198,47 @@ async function loadLinks() {
 }
 
 async function init() {
-  searchInput.addEventListener("input", renderLinks);
+  try {
+    searchInput.addEventListener("input", renderLinks);
 
-  if (!isSupabaseConfigured()) {
-    authPanel.hidden = true;
-    dashboardContent.hidden = false;
-    currentUser.textContent = "Demo mode";
-    await loadLinks();
-    return;
-  }
+    if (!isSupabaseConfigured()) {
+      authPanel.hidden = false;
+      dashboardContent.hidden = true;
+      currentUser.textContent = "Setup needed";
+      showAuthMessage(
+        "Supabase could not start. Check your internet connection and make sure the Supabase script is loading.",
+        "error"
+      );
+      return;
+    }
 
-  const { data } = await supabaseClient.auth.getSession();
-  if (data.session) {
-    showDashboard(data.session);
-    await loadLinks();
-  } else {
+    const { data, error } = await supabaseClient.auth.getSession();
+    if (error) {
+      showLogin();
+      showAuthMessage(error.message, "error");
+      return;
+    }
+
+    if (data.session) {
+      showDashboard(data.session);
+      await loadLinks();
+    } else {
+      showLogin();
+    }
+  } catch (error) {
     showLogin();
+    showAuthMessage(error.message || "The dashboard could not start.", "error");
   }
 }
 
 authForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   showAuthMessage("Signing in...");
+
+  if (!isSupabaseConfigured()) {
+    showAuthMessage("Supabase is not ready. Refresh the page and check your connection.", "error");
+    return;
+  }
 
   const { data, error } = await supabaseClient.auth.signInWithPassword({
     email: authEmail.value,
@@ -237,6 +256,11 @@ authForm.addEventListener("submit", async (event) => {
 });
 
 signOutButton.addEventListener("click", async () => {
+  if (!isSupabaseConfigured()) {
+    showLogin();
+    return;
+  }
+
   await supabaseClient.auth.signOut();
   links = [];
   renderTabs();

@@ -9,6 +9,10 @@ function createDashboardClient() {
     return null;
   }
 
+  if (!window.supabase) {
+    return null;
+  }
+
   return window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
 }
 
